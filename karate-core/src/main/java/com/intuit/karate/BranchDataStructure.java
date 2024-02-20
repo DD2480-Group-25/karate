@@ -55,7 +55,7 @@ public class BranchDataStructure {
                 count++;
             }
         }
-        double result = count / branchCount;
+        double result = count / branchCount * 100;
         return result;
     }
 
