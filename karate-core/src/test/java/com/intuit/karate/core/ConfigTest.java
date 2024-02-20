@@ -8,7 +8,10 @@ import com.intuit.karate.core.DummyClient;
 import com.intuit.karate.core.MockHandler;
 import com.intuit.karate.core.Variable;
 import com.intuit.karate.shell.StringLogAppender;
+import com.oracle.truffle.api.instrumentation.GenerateWrapper.Ignore;
+
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static com.intuit.karate.TestUtils.FeatureBuilder;
@@ -32,17 +35,6 @@ class ConfigTest {
     @BeforeEach
     void beforeEach() {
         config = new Config();
-    }
-
-    @BeforeAll
-    static void beforeAll() {
-        new BranchDataStructure(60, "config-test");
-    }
-
-    @AfterAll
-    static void afterAll() {
-        // Logging the coverage result once all tests ran
-        BranchDataStructure.instances.get("config-test").logResults();
     }
 
     // Requirement: the url needs to be set correctly
@@ -105,5 +97,11 @@ class ConfigTest {
     void testPauseIfNotPerf() {
         config.configure("pauseIfNotPerf", new Variable(true));
         assertTrue(config.isPauseIfNotPerf());
+    }
+
+    @Test
+    void logCoverageResult() {
+        BranchDataStructure bds = new BranchDataStructure(60, "configure");
+        bds.logResults();
     }
 }

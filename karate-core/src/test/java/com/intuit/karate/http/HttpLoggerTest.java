@@ -45,12 +45,6 @@ class HttpLoggerTest {
         config = new Config();
     }
 
-    @AfterAll
-    static void afterAll() {
-        // Logging the coverage result once all tests ran
-        BranchDataStructure.instances.get("config-test").logResults();
-    }
-
     void setup(String path, String body, String contentType) {
         feature = FeatureBuilder.background().scenario(
                 "pathMatches('/"+ path + "')",
