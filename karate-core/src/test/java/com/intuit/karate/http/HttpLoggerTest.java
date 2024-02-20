@@ -1,5 +1,6 @@
 package com.intuit.karate.http;
 
+import com.intuit.karate.BranchDataStructure;
 import com.intuit.karate.LogAppender;
 import com.intuit.karate.Logger;
 import com.intuit.karate.core.Config;
@@ -15,12 +16,14 @@ import static com.intuit.karate.TestUtils.match;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
+
 /**
  * Test body and content type handling for request and response logging.
  * @author edwardsph
  */
 class HttpLoggerTest {
-
     HttpClient client = new DummyClient();
     MockHandler handler;
     FeatureBuilder feature;
@@ -30,6 +33,7 @@ class HttpLoggerTest {
     Config config;
     LogAppender logAppender = new StringLogAppender(false);
     HttpLogger httpLogger;
+    BranchDataStructure dataStructure;
 
     private static final String TURTLE_SAMPLE = "<http://example.org/hello> <http://example.org/#linked> <http://example.org/world> .";
 
@@ -39,6 +43,17 @@ class HttpLoggerTest {
         testLogger.setAppender(logAppender);
         httpLogger = new HttpLogger(testLogger);
         config = new Config();
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        new BranchDataStructure(47, "config-test");
+    }
+
+    @AfterAll
+    static void afterAll() {
+        // Logging the coverage result once all tests ran
+        BranchDataStructure.instances.get("config-test").logResults();
     }
 
     void setup(String path, String body, String contentType) {
@@ -245,5 +260,10 @@ class HttpLoggerTest {
         String logs = logAppender.collect();
         assertTrue(logs.contains(TURTLE_SAMPLE));
         assertTrue(logs.contains("Content-Type: text/turtle"));
+    }
+
+    @Test
+    void testConfigure() {        
+        config.configure("url", new Variable("www.site.com"));
     }
 }
