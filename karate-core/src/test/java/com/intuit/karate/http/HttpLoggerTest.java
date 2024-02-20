@@ -45,11 +45,6 @@ class HttpLoggerTest {
         config = new Config();
     }
 
-    @BeforeAll
-    static void beforeAll() {
-        new BranchDataStructure(47, "config-test");
-    }
-
     @AfterAll
     static void afterAll() {
         // Logging the coverage result once all tests ran

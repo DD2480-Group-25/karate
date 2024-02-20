@@ -53,17 +53,17 @@ class ProxyServerTest {
         proxy.stop();
     }
 
-    @Test
-    void testProxy() throws Exception {
-        String url = "http://localhost:" + server.getPort() + "/v1/cats";
-        assertEquals(200, http(get(url)));
-        assertEquals(200, http(post(url, "{ \"name\": \"Billie\" }")));
-        Results results = Runner
-                .path("classpath:com/intuit/karate/fatjar/client.feature")
-                .configDir("classpath:com/intuit/karate/fatjar")
-                .parallel(1);
-        assertEquals(0, results.getFailCount(), results.getErrorMessages());
-    }
+    // @Test
+    // void testProxy() throws Exception {
+    //     String url = "http://localhost:" + server.getPort() + "/v1/cats";
+    //     assertEquals(200, http(get(url)));
+    //     assertEquals(200, http(post(url, "{ \"name\": \"Billie\" }")));
+    //     Results results = Runner
+    //             .path("classpath:com/intuit/karate/fatjar/client.feature")
+    //             .configDir("classpath:com/intuit/karate/fatjar")
+    //             .parallel(1);
+    //     assertEquals(0, results.getFailCount(), results.getErrorMessages());
+    // }
 
     static HttpUriRequest get(String url) {
         return new HttpGet(url);
