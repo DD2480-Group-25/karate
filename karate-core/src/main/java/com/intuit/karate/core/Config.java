@@ -148,7 +148,8 @@ public class Config {
                 return false;
             case "cookies": // This is branch 3
             BranchDataStructure.instances.get("config-test").setFlag(3);
-                if (!value.isNull()) {
+                if (!value.isNull()) { // This is branch 48
+                    BranchDataStructure.instances.get("config-test").setFlag(48);
                     value = new Variable(Cookies.normalize(value.getValue()));
                 }
                 cookies = value;
@@ -200,10 +201,12 @@ public class Config {
                     Map<String, Object> map = value.getValue();
                     showLog = get(map, "showLog", showLog);
                     showAllSteps = get(map, "showAllSteps", showAllSteps);
-                } else if (value.isTrue()) {
+                } else if (value.isTrue()) { // This is branch 49
+                    BranchDataStructure.instances.get("config-test").setFlag(49);
                     showLog = true;
                     showAllSteps = true;
-                } else { 
+                } else { // This is branch 50
+                    BranchDataStructure.instances.get("config-test").setFlag(50);
                     showLog = false;
                     showAllSteps = false;
                 }
@@ -213,11 +216,11 @@ public class Config {
             case KAFKA:
             case GRPC:
             case WEBSOCKET: // This is branch 16
-            BranchDataStructure.instances.get("config-test").setFlag(16);
+                BranchDataStructure.instances.get("config-test").setFlag(16);
                 customOptions.put(key, value.getValue());
                 return false;
             case "driverTarget": // This is branch 17
-            BranchDataStructure.instances.get("config-test").setFlag(17);
+                BranchDataStructure.instances.get("config-test").setFlag(17);
                 if (value.isMap()) { // This is branch 18
                     BranchDataStructure.instances.get("config-test").setFlag(18);
                     Map<String, Object> map = value.getValue();
@@ -225,15 +228,17 @@ public class Config {
                         BranchDataStructure.instances.get("config-test").setFlag(19);
                         // todo add the working dir here
                         driverTarget = new DockerTarget(map);
-                    } else {
+                    } else { // This is branch 51
+                        BranchDataStructure.instances.get("config-test").setFlag(51);
                         throw new RuntimeException("bad driverTarget config, expected key 'docker': " + map);
                     }
-                } else {
+                } else { // This is branch 52
+                    BranchDataStructure.instances.get("config-test").setFlag(52);
                     driverTarget = value.getValue();
                 }
                 return false;
             case "retry": // This is branch 20
-            BranchDataStructure.instances.get("config-test").setFlag(20);
+                BranchDataStructure.instances.get("config-test").setFlag(20);
                 if (value.isMap()) { // This is branch 21
                     BranchDataStructure.instances.get("config-test").setFlag(21);
                     Map<String, Object> map = value.getValue();
@@ -290,11 +295,13 @@ public class Config {
                 if (value.isTrue() || enableContinueOnStepFailureFeature) { // This is branch 32
                     BranchDataStructure.instances.get("config-test").setFlag(32);
                     continueOnStepFailureMethods.addAll(stepKeywords == null ? StepRuntime.METHOD_MATCH : StepRuntime.findMethodsByKeywords(stepKeywords));
-                } else {
+                } else { // This is branch 53
+                    BranchDataStructure.instances.get("config-test").setFlag(53);
                     if (stepKeywords == null) { // This is branch 33
                         BranchDataStructure.instances.get("config-test").setFlag(33);
                         continueOnStepFailureMethods.clear();
-                    } else {
+                    } else { // This is branch 54
+                        BranchDataStructure.instances.get("config-test").setFlag(54);
                         continueOnStepFailureMethods.removeAll(StepRuntime.findMethodsByKeywords(stepKeywords));
                     }
                 }
@@ -315,7 +322,8 @@ public class Config {
                     BranchDataStructure.instances.get("config-test").setFlag(37);
                     sslEnabled = true;
                     sslAlgorithm = value.getAsString();
-                } else if (value.isMap()) {
+                } else if (value.isMap()) { // This is branch 55
+                BranchDataStructure.instances.get("config-test").setFlag(55);
                     sslEnabled = true;
                     Map<String, Object> map = value.getValue();
                     sslKeyStore = (String) map.get("keyStore");
@@ -330,7 +338,8 @@ public class Config {
                         sslTrustAll = trustAll;
                     }
                     sslAlgorithm = (String) map.get("algorithm");
-                } else {
+                } else { // This is branch 56
+                    BranchDataStructure.instances.get("config-test").setFlag(56);
                     sslEnabled = value.isTrue();
                 }
                 return true;
@@ -351,9 +360,11 @@ public class Config {
                 if (value.isNull()) { // This is branch 43
                     BranchDataStructure.instances.get("config-test").setFlag(43);
                     proxyUri = null;
-                } else if (value.isString()) { //
+                } else if (value.isString()) { // This is branch 57
+                BranchDataStructure.instances.get("config-test").setFlag(57);
                     proxyUri = value.getAsString();
-                } else {
+                } else { // This is branch 58
+                    BranchDataStructure.instances.get("config-test").setFlag(58);
                     Map<String, Object> map = value.getValue();
                     proxyUri = (String) map.get("uri");
                     proxyUsername = (String) map.get("username");
@@ -370,7 +381,8 @@ public class Config {
                 if (value.isNull()) { // This is branch 46
                     BranchDataStructure.instances.get("config-test").setFlag(46);
                     ntlmEnabled = false;
-                } else {
+                } else { // This is branch 59
+                    BranchDataStructure.instances.get("config-test").setFlag(59);
                     Map<String, Object> map = value.getValue();
                     ntlmEnabled = true;
                     ntlmUsername = (String) map.get("username");
