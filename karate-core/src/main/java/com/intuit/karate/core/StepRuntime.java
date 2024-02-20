@@ -142,21 +142,22 @@ public class StepRuntime {
 
             Method method = null;
             if (methodMatch.find()) {
-                try {
-                    String className = methodMatch.group(1);
-                    String methodName = methodMatch.group(2);
-                    String params = methodMatch.group(3);
-                    List<String> paramList = Arrays.asList(params.split(","));
-                    method = Class.forName(className).getMethod(methodName, paramList.stream().map(param -> {
-                        try {
-                            return Class.forName(param);
-                        } catch (ClassNotFoundException e) {
-                            return null;
-                        }
-                    }).filter(Objects::nonNull).toArray(Class<?>[]::new));
-                } catch (ClassNotFoundException | NoSuchMethodException e) {
-                    return null;
-                }
+                // try {
+                //     String className = methodMatch.group(1);
+                //     String methodName = methodMatch.group(2);
+                //     String params = methodMatch.group(3);
+                //     List<String> paramList = Arrays.asList(params.split(","));
+                //     method = Class.forName(className).getMethod(methodName, paramList.stream().map(param -> {
+                //         try {
+                //             return Class.forName(param);
+                //         } catch (ClassNotFoundException e) {
+                //             return null;
+                //         }
+                //     }).filter(Objects::nonNull).toArray(Class<?>[]::new));
+                // } catch (ClassNotFoundException | NoSuchMethodException e) {
+                //     return null;
+                // }
+                return null;
             }
 
             List<String> args = "null".equalsIgnoreCase(referenceArgs) ? null : Json.of(JsonUtils.fromJson(referenceArgs)).asList();
