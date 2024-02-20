@@ -2,6 +2,8 @@ package com.intuit.karate.graal;
 
 import java.math.BigInteger;
 import java.util.Collections;
+
+import org.graalvm.polyglot.Value;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,4 +31,19 @@ public class JsValueTest {
         assertTrue(JsValue.isTruthy(Collections.emptyMap()));
     }
 
+    @Test
+    void testIsNull() {
+        // Test the isNull method
+        Value nullValue = Value.asValue(null);
+        JsValue jsValue = new JsValue(nullValue);
+        assertTrue(jsValue.isNull());
+    }
+
+    @Test
+    void testToJava() {
+        // Test the toJava method
+        Value stringValue = Value.asValue("Hello");
+        Object javaObject = JsValue.toJava(stringValue);
+        assertEquals("Hello", javaObject);
+    }
 }
