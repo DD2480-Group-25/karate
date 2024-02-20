@@ -4,12 +4,28 @@ import java.math.BigInteger;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import com.intuit.karate.BranchDataStructure;
+
+import org.graalvm.polyglot.Value;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
 
 /**
  *
  * @author pthomas3
  */
 public class JsValueTest {
+    @BeforeAll
+    static void beforeAll() {
+        new BranchDataStructure(27, "config-test");
+    }
+
+    @AfterAll
+    static void afterAll() {
+        // Logging the coverage result once all tests ran
+        BranchDataStructure.instances.get("config-test").logResults();
+    }
 
     @Test
     void testTruthy() {
@@ -28,5 +44,4 @@ public class JsValueTest {
         assertTrue(JsValue.isTruthy(Collections.emptyList()));
         assertTrue(JsValue.isTruthy(Collections.emptyMap()));
     }
-
 }
