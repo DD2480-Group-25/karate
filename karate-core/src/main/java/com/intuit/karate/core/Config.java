@@ -135,195 +135,223 @@ public class Config {
     }
 
     public boolean configure(String key, Variable value) { // TODO use enum
+        BranchDataStructure bds = new BranchDataStructure(60, "configure");
+
         key = StringUtils.trimToEmpty(key);
-        BranchDataStructure.instances.get("config-test").setFlag(0);
+        bds.setFlag(0);
         switch (key) { // This is branch 0
             case "url": // This is branch 1
-                BranchDataStructure.instances.get("config-test").setFlag(1);
+                bds.setFlag(1);
                 url = value.getAsString();
+                bds.saveFlags();
                 return false;
             case "headers": // This is branch 2
-            BranchDataStructure.instances.get("config-test").setFlag(2);
+            bds.setFlag(2);
                 headers = value;
+                bds.saveFlags();
                 return false;
             case "cookies": // This is branch 3
-            BranchDataStructure.instances.get("config-test").setFlag(3);
+            bds.setFlag(3);
                 if (!value.isNull()) { // This is branch 48
-                    BranchDataStructure.instances.get("config-test").setFlag(48);
+                    bds.setFlag(48);
                     value = new Variable(Cookies.normalize(value.getValue()));
                 }
                 cookies = value;
+                bds.saveFlags();
                 return false;
             case "responseHeaders": // This is branch 4
-            BranchDataStructure.instances.get("config-test").setFlag(4);
+            bds.setFlag(4);
                 responseHeaders = value;
+                bds.saveFlags();
                 return false;
             case "responseDelay": // This is branch 5
-            BranchDataStructure.instances.get("config-test").setFlag(5);
+            bds.setFlag(5);
                 responseDelay = value.isNull() ? 0 : value.getAsInt();
+                bds.saveFlags();
                 return false;
             case "xmlNamespaceAware": // This is branch 6
-            BranchDataStructure.instances.get("config-test").setFlag(6);
+            bds.setFlag(6);
                 xmlNamespaceAware = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "lowerCaseResponseHeaders": // This is branch 7
-            BranchDataStructure.instances.get("config-test").setFlag(7);
+            bds.setFlag(7);
                 lowerCaseResponseHeaders = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "cors": // This is branch 8
-            BranchDataStructure.instances.get("config-test").setFlag(8);
+            bds.setFlag(8);
                 corsEnabled = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "logPrettyResponse": // This is branch 9
-            BranchDataStructure.instances.get("config-test").setFlag(9);
+            bds.setFlag(9);
                 logPrettyResponse = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "logPrettyRequest": // This is branch 10
-            BranchDataStructure.instances.get("config-test").setFlag(10);
+            bds.setFlag(10);
                 logPrettyRequest = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "printEnabled": // This is branch 11
-            BranchDataStructure.instances.get("config-test").setFlag(11);
+            bds.setFlag(11);
                 printEnabled = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "afterScenario": // This is branch 12
-            BranchDataStructure.instances.get("config-test").setFlag(12);
+            bds.setFlag(12);
                 afterScenario = value;
+                bds.saveFlags();
                 return false;
             case "afterFeature": // This is branch 13
-            BranchDataStructure.instances.get("config-test").setFlag(13);
+            bds.setFlag(13);
                 afterFeature = value;
+                bds.saveFlags();
                 return false;
             case "report": // This is branch 14
-            BranchDataStructure.instances.get("config-test").setFlag(14);
+            bds.setFlag(14);
                 if (value.isMap()) { // This is branch 15
-                    BranchDataStructure.instances.get("config-test").setFlag(15);
+                    bds.setFlag(15);
                     Map<String, Object> map = value.getValue();
                     showLog = get(map, "showLog", showLog);
                     showAllSteps = get(map, "showAllSteps", showAllSteps);
                 } else if (value.isTrue()) { // This is branch 49
-                    BranchDataStructure.instances.get("config-test").setFlag(49);
+                    bds.setFlag(49);
                     showLog = true;
                     showAllSteps = true;
                 } else { // This is branch 50
-                    BranchDataStructure.instances.get("config-test").setFlag(50);
+                    bds.setFlag(50);
                     showLog = false;
                     showAllSteps = false;
                 }
+                bds.saveFlags();
                 return false;
             case DRIVER:
             case ROBOT:
             case KAFKA:
             case GRPC:
             case WEBSOCKET: // This is branch 16
-                BranchDataStructure.instances.get("config-test").setFlag(16);
+                bds.setFlag(16);
                 customOptions.put(key, value.getValue());
+                bds.saveFlags();
                 return false;
             case "driverTarget": // This is branch 17
-                BranchDataStructure.instances.get("config-test").setFlag(17);
+                bds.setFlag(17);
                 if (value.isMap()) { // This is branch 18
-                    BranchDataStructure.instances.get("config-test").setFlag(18);
+                    bds.setFlag(18);
                     Map<String, Object> map = value.getValue();
                     if (map.containsKey("docker")) { // This is branch 19
-                        BranchDataStructure.instances.get("config-test").setFlag(19);
+                        bds.setFlag(19);
                         // todo add the working dir here
                         driverTarget = new DockerTarget(map);
                     } else { // This is branch 51
-                        BranchDataStructure.instances.get("config-test").setFlag(51);
+                        bds.setFlag(51);
                         throw new RuntimeException("bad driverTarget config, expected key 'docker': " + map);
                     }
                 } else { // This is branch 52
-                    BranchDataStructure.instances.get("config-test").setFlag(52);
+                    bds.setFlag(52);
                     driverTarget = value.getValue();
                 }
+                bds.saveFlags();
                 return false;
             case "retry": // This is branch 20
-                BranchDataStructure.instances.get("config-test").setFlag(20);
+                bds.setFlag(20);
                 if (value.isMap()) { // This is branch 21
-                    BranchDataStructure.instances.get("config-test").setFlag(21);
+                    bds.setFlag(21);
                     Map<String, Object> map = value.getValue();
                     retryInterval = get(map, "interval", retryInterval);
                     retryCount = get(map, "count", retryCount);
                 }
+                bds.saveFlags();
                 return false;
             case "pauseIfNotPerf": // This is branch 22
-            BranchDataStructure.instances.get("config-test").setFlag(22);
+            bds.setFlag(22);
                 pauseIfNotPerf = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "abortedStepsShouldPass": // This is branch 23
-            BranchDataStructure.instances.get("config-test").setFlag(23);
+            bds.setFlag(23);
                 abortedStepsShouldPass = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "abortSuiteOnFailure": // This is branch 24
-            BranchDataStructure.instances.get("config-test").setFlag(24);
+            bds.setFlag(24);
                 abortSuiteOnFailure = value.isTrue();
+                bds.saveFlags();
                 return false;
             case "callSingleCache": // This is branch 25
-                BranchDataStructure.instances.get("config-test").setFlag(25);
+                bds.setFlag(25);
                 if (value.isMap()) { // This is branch 26
-                    BranchDataStructure.instances.get("config-test").setFlag(26);
+                    bds.setFlag(26);
                     Map<String, Object> map = value.getValue();
                     callSingleCacheMinutes = get(map, "minutes", callSingleCacheMinutes);
                     callSingleCacheDir = get(map, "dir", callSingleCacheDir);
                 }
+                bds.saveFlags();
                 return false;
             case "logModifier": // This is branch 27
-                BranchDataStructure.instances.get("config-test").setFlag(27);
+                bds.setFlag(27);
                 logModifier = value.getValue();
+                bds.saveFlags();
                 return false;
             case "imageComparison": // This is branch 28
-                BranchDataStructure.instances.get("config-test").setFlag(28);
+                bds.setFlag(28);
                 imageComparisonOptions = value.getValue();
+                bds.saveFlags();
                 return false;
             case "matchEachEmptyAllowed": // This is branch 29
-                BranchDataStructure.instances.get("config-test").setFlag(29);
+                bds.setFlag(29);
                 matchEachEmptyAllowed = value.getValue();
+                bds.saveFlags();
                 return false;
             case "continueOnStepFailure": // This is branch 30
-                BranchDataStructure.instances.get("config-test").setFlag(30);
+                bds.setFlag(30);
                 continueOnStepFailureMethods.clear(); // clears previous configuration - in case someone is trying to chain these and forgets resetting the previous one
                 boolean enableContinueOnStepFailureFeature = false;
                 Boolean continueAfterIgnoredFailure = null;
                 List<String> stepKeywords = null;
                 if (value.isMap()) { // This is branch 31
-                    BranchDataStructure.instances.get("config-test").setFlag(31);
+                    bds.setFlag(31);
                     Map<String, Object> map = value.getValue();
                     stepKeywords = (List<String>) map.get("keywords");
                     continueAfterIgnoredFailure = (Boolean) map.get("continueAfter");
                     enableContinueOnStepFailureFeature = map.get("enabled") != null && (Boolean) map.get("enabled");
                 }
                 if (value.isTrue() || enableContinueOnStepFailureFeature) { // This is branch 32
-                    BranchDataStructure.instances.get("config-test").setFlag(32);
+                    bds.setFlag(32);
                     continueOnStepFailureMethods.addAll(stepKeywords == null ? StepRuntime.METHOD_MATCH : StepRuntime.findMethodsByKeywords(stepKeywords));
                 } else { // This is branch 53
-                    BranchDataStructure.instances.get("config-test").setFlag(53);
+                    bds.setFlag(53);
                     if (stepKeywords == null) { // This is branch 33
-                        BranchDataStructure.instances.get("config-test").setFlag(33);
+                        bds.setFlag(33);
                         continueOnStepFailureMethods.clear();
                     } else { // This is branch 54
-                        BranchDataStructure.instances.get("config-test").setFlag(54);
+                        bds.setFlag(54);
                         continueOnStepFailureMethods.removeAll(StepRuntime.findMethodsByKeywords(stepKeywords));
                     }
                 }
                 if (continueAfterIgnoredFailure != null) { // This is branch 34
-                    BranchDataStructure.instances.get("config-test").setFlag(34);
+                    bds.setFlag(34);
                     continueAfterContinueOnStepFailure = continueAfterIgnoredFailure;
                 }
+                bds.saveFlags();
                 return false;
             // here on the http client has to be re-constructed ================
             // and we return true instead of false
             case "charset": // This is branch 35
-                BranchDataStructure.instances.get("config-test").setFlag(35);
+                bds.setFlag(35);
                 charset = value.isNull() ? null : Charset.forName(value.getAsString());
+                bds.saveFlags();
                 return true;
             case "ssl": // This is branch 36
-                BranchDataStructure.instances.get("config-test").setFlag(36);
+                bds.setFlag(36);
                 if (value.isString()) { // This is branch 37
-                    BranchDataStructure.instances.get("config-test").setFlag(37);
+                    bds.setFlag(37);
                     sslEnabled = true;
                     sslAlgorithm = value.getAsString();
                 } else if (value.isMap()) { // This is branch 55
-                BranchDataStructure.instances.get("config-test").setFlag(55);
+                bds.setFlag(55);
                     sslEnabled = true;
                     Map<String, Object> map = value.getValue();
                     sslKeyStore = (String) map.get("keyStore");
@@ -334,55 +362,61 @@ public class Config {
                     sslTrustStoreType = (String) map.get("trustStoreType");
                     Boolean trustAll = (Boolean) map.get("trustAll");
                     if (trustAll != null) { // This is branch 38
-                        BranchDataStructure.instances.get("config-test").setFlag(38);
+                        bds.setFlag(38);
                         sslTrustAll = trustAll;
                     }
                     sslAlgorithm = (String) map.get("algorithm");
                 } else { // This is branch 56
-                    BranchDataStructure.instances.get("config-test").setFlag(56);
+                    bds.setFlag(56);
                     sslEnabled = value.isTrue();
                 }
+                bds.saveFlags();
                 return true;
             case "followRedirects": // This is branch 39
-                BranchDataStructure.instances.get("config-test").setFlag(39);
+                bds.setFlag(39);
                 followRedirects = value.isTrue();
+                bds.saveFlags();
                 return true;
             case "connectTimeout": // This is branch 40
-                BranchDataStructure.instances.get("config-test").setFlag(40);
+                bds.setFlag(40);
                 connectTimeout = value.getAsInt();
+                bds.saveFlags();
                 return true;
             case "readTimeout": // This is branch 41
-                BranchDataStructure.instances.get("config-test").setFlag(41);
+                bds.setFlag(41);
                 readTimeout = value.getAsInt();
+                bds.saveFlags();
                 return true;
             case "proxy": // This is branch 42
-                BranchDataStructure.instances.get("config-test").setFlag(42);
+                bds.setFlag(42);
                 if (value.isNull()) { // This is branch 43
-                    BranchDataStructure.instances.get("config-test").setFlag(43);
+                    bds.setFlag(43);
                     proxyUri = null;
                 } else if (value.isString()) { // This is branch 57
-                BranchDataStructure.instances.get("config-test").setFlag(57);
+                bds.setFlag(57);
                     proxyUri = value.getAsString();
                 } else { // This is branch 58
-                    BranchDataStructure.instances.get("config-test").setFlag(58);
+                    bds.setFlag(58);
                     Map<String, Object> map = value.getValue();
                     proxyUri = (String) map.get("uri");
                     proxyUsername = (String) map.get("username");
                     proxyPassword = (String) map.get("password");
                     nonProxyHosts = (List) map.get("nonProxyHosts");
                 }
+                bds.saveFlags();
                 return true;
             case "localAddress": // This is branch 44
-                BranchDataStructure.instances.get("config-test").setFlag(44);
+                bds.setFlag(44);
                 localAddress = value.getAsString();
+                bds.saveFlags();
                 return true;
             case "ntlmAuth": // This is branch 45
-                BranchDataStructure.instances.get("config-test").setFlag(45);
+                bds.setFlag(45);
                 if (value.isNull()) { // This is branch 46
-                    BranchDataStructure.instances.get("config-test").setFlag(46);
+                    bds.setFlag(46);
                     ntlmEnabled = false;
                 } else { // This is branch 59
-                    BranchDataStructure.instances.get("config-test").setFlag(59);
+                    bds.setFlag(59);
                     Map<String, Object> map = value.getValue();
                     ntlmEnabled = true;
                     ntlmUsername = (String) map.get("username");
@@ -390,9 +424,11 @@ public class Config {
                     ntlmDomain = (String) map.get("domain");
                     ntlmWorkstation = (String) map.get("workstation");
                 }
+                bds.saveFlags();
                 return true;
             default: // This is branch 47
-                BranchDataStructure.instances.get("config-test").setFlag(47);
+                bds.setFlag(47);
+                bds.saveFlags();
                 throw new RuntimeException("unexpected 'configure' key: '" + key + "'");
         }
     }

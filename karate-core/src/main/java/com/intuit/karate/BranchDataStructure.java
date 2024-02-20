@@ -15,16 +15,16 @@ public class BranchDataStructure {
 
     private boolean[] flags;
     private int branchCount;
-    private String name = "flags.dat";
+    private String name;
 
 
     public BranchDataStructure(int branchCount, String name) {
         this.branchCount = branchCount;
-        reset();
-        instances.put(name, this);
+        this.name = "flags-" + name + ".dat";
+        loadFlags();
     }
 
-    public void reset() {
+    public void reset_flags() {
         flags = new boolean[branchCount];
         for (int i = 0; i < branchCount; i++) {
             flags[i] = false;
@@ -34,6 +34,7 @@ public class BranchDataStructure {
     public void setFlag(int id) {
         if (id >= 0 && id < branchCount) {
             flags[id] = true;
+            System.out.println("Setting flag" + id);
         }
     }
 
@@ -98,19 +99,36 @@ public class BranchDataStructure {
             toSave = elementwiseOR(toSave, readBooleanArrayFromFile(name));
         }
 
-        readBooleanArrayFromFile(name);
         writeBooleanArrayToFile(toSave, name);
     }
 
     public void loadFlags() {
         if (fileExists(name)) {
             flags = readBooleanArrayFromFile(name);
+            System.out.print("Loading ");
+            logArray(flags);
+        } else {
+            reset_flags();
         }
+    }
+
+    public void logArray(boolean[] array) {
+        for (int i = 0; i < flags.length; i++) {
+            if (flags[i]) {
+                System.out.print(1);
+            } else {
+                System.out.print(0);
+            }
+            System.out.print(" ");
+        }
+        System.out.println();
     }
 
     // Function to check if a file exists locally
     public static boolean fileExists(String filename) {
         File file = new File(filename);
+        System.out.println(file.getAbsolutePath());
+        System.out.println(file.exists());
         return file.exists();
     }
 
