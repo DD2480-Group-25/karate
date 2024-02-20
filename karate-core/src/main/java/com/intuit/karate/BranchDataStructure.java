@@ -1,4 +1,10 @@
 package com.intuit.karate;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 /**
  * BranchDataStructure
@@ -9,14 +15,16 @@ public class BranchDataStructure {
 
     private boolean[] flags;
     private int branchCount;
+    private String name;
+
 
     public BranchDataStructure(int branchCount, String name) {
         this.branchCount = branchCount;
-        reset();
-        instances.put(name, this);
+        this.name = "flags-" + name + ".dat";
+        loadFlags();
     }
 
-    public void reset() {
+    public void reset_flags() {
         flags = new boolean[branchCount];
         for (int i = 0; i < branchCount; i++) {
             flags[i] = false;
@@ -26,6 +34,7 @@ public class BranchDataStructure {
     public void setFlag(int id) {
         if (id >= 0 && id < branchCount) {
             flags[id] = true;
+            System.out.println("Setting flag" + id);
         }
     }
 
@@ -55,7 +64,7 @@ public class BranchDataStructure {
                 count++;
             }
         }
-        double result = count / branchCount;
+        double result = count / branchCount * 100;
         return result;
     }
 
@@ -82,4 +91,90 @@ public class BranchDataStructure {
             System.out.println("All the branches were taken, yay");
         }
     }
+
+    public void saveFlags() {
+        boolean[] toSave = flags;
+
+        if (fileExists(name)) {
+            toSave = elementwiseOR(toSave, readBooleanArrayFromFile(name));
+        }
+
+        writeBooleanArrayToFile(toSave, name);
+    }
+
+    public void loadFlags() {
+        if (fileExists(name)) {
+            flags = readBooleanArrayFromFile(name);
+            System.out.print("Loading ");
+            logArray(flags);
+        } else {
+            reset_flags();
+        }
+    }
+
+    public void logArray(boolean[] array) {
+        for (int i = 0; i < flags.length; i++) {
+            if (flags[i]) {
+                System.out.print(1);
+            } else {
+                System.out.print(0);
+            }
+            System.out.print(" ");
+        }
+        System.out.println();
+    }
+
+    // Function to check if a file exists locally
+    public static boolean fileExists(String filename) {
+        File file = new File(filename);
+        System.out.println(file.getAbsolutePath());
+        System.out.println(file.exists());
+        return file.exists();
+    }
+
+    // Method to write a boolean array to a file
+    private static void writeBooleanArrayToFile(boolean[] array, String filename) {
+        try (FileOutputStream fos = new FileOutputStream(filename);
+             DataOutputStream dos = new DataOutputStream(fos)) {
+
+            dos.writeInt(array.length); // Write the length of the array first
+            for (boolean value : array) {
+                dos.writeBoolean(value); // Write each boolean value
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to read a boolean array from a file
+    private static boolean[] readBooleanArrayFromFile(String filename) {
+        boolean[] array = null;
+        try (FileInputStream fis = new FileInputStream(filename);
+             DataInputStream dis = new DataInputStream(fis)) {
+
+            int length = dis.readInt(); // Read the length of the array first
+            array = new boolean[length];
+            for (int i = 0; i < length; i++) {
+                array[i] = dis.readBoolean(); // Read each boolean value
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return array;
+    }
+
+    // Function to perform element-wise OR on two boolean arrays
+    public static boolean[] elementwiseOR(boolean[] array1, boolean[] array2) {
+        if (array1.length != array2.length) {
+            throw new IllegalArgumentException("Arrays must have the same length");
+        }
+
+        boolean[] result = new boolean[array1.length];
+        for (int i = 0; i < array1.length; i++) {
+            result[i] = array1[i] || array2[i]; // Perform OR operation element-wise
+        }
+        return result;
+    }
+
+
 }

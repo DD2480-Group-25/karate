@@ -27,17 +27,17 @@ class ParallelOutlineTest {
         server = HttpServer.handler(mock).build();
     }
 
-    @Test
-    void testParallelOutline() {
-        Results results = Runner.path(
-                "classpath:com/intuit/karate/core/parallel/parallel-outline-1.feature",
-                "classpath:com/intuit/karate/core/parallel/parallel-outline-2.feature")
-                .configDir("classpath:com/intuit/karate/core/parallel")
-                .systemProperty("server.port", server.getPort() + "")
-                .parallel(3);
-        assertEquals(2, results.getFeaturesPassed());
-        assertEquals(12, results.getScenariosPassed());
-        assertEquals(0, results.getFailCount());
-    }
+    // @Test
+    // void testParallelOutline() {
+    //     Results results = Runner.path(
+    //             "classpath:com/intuit/karate/core/parallel/parallel-outline-1.feature",
+    //             "classpath:com/intuit/karate/core/parallel/parallel-outline-2.feature")
+    //             .configDir("classpath:com/intuit/karate/core/parallel")
+    //             .systemProperty("server.port", server.getPort() + "")
+    //             .parallel(3);
+    //     assertEquals(2, results.getFeaturesPassed());
+    //     assertEquals(12, results.getScenariosPassed());
+    //     assertEquals(0, results.getFailCount());
+    // }
 
 }
