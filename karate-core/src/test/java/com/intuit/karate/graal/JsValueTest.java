@@ -48,7 +48,7 @@ public class JsValueTest {
 
     @Test
     void testToJavaBoolean() {
-        // Test the toJava method with int
+        // Test the toJava method with boolean
         Value intValue = Value.asValue(true);
         Object javaObject = JsValue.toJava(intValue);
         assertEquals(true, javaObject);
@@ -56,7 +56,7 @@ public class JsValueTest {
 
     @Test
     void testToJavaArray() {
-        // Test the toJava method with int
+        // Test the toJava method with array
         int[] intArray = new int[]{ 1,2,3,4,5,6,7,8,9,10 };
         Value intValue = Value.asValue(intArray);
         Object javaObject = JsValue.toJava(intValue);
