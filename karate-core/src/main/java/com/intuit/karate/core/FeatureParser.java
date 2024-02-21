@@ -25,6 +25,7 @@ package com.intuit.karate.core;
 
 import com.intuit.karate.StringUtils;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class FeatureParser extends KarateParserBaseListener {
         parser.addErrorListener(errorListener);
         RuleContext tree = parser.feature();
         ParseTreeWalker walker = new ParseTreeWalker();
-        walker.walk(this, tree);
+        walker.walk((ParseTreeListener) this, tree);
     }
     
     protected static void parse(Feature feature) {
