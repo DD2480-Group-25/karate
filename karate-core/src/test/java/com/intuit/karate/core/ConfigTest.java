@@ -37,6 +37,9 @@ class ConfigTest {
         config = new Config();
     }
 
+    // === TESTS ADDED TO IMPROVE COVERAGE ===
+    // comment them out to see the before/after difference
+
     // Requirement: the url needs to be set correctly
     @Test
     void testConfigureUrl() {        
@@ -99,9 +102,18 @@ class ConfigTest {
         assertTrue(config.isPauseIfNotPerf());
     }
 
+    // === END OF ADDED TESTS ===
+
     @Test
     void logCoverageResult() {
         BranchDataStructure bds = new BranchDataStructure(60, "configure");
         bds.logResults();
+    }
+
+    @Test
+    @Disabled
+    void delete_file() {
+        BranchDataStructure bds = new BranchDataStructure(60, "configure");
+        bds.delete_file();
     }
 }
