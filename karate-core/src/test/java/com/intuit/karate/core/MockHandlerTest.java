@@ -1,6 +1,9 @@
 package com.intuit.karate.core;
 
 import static com.intuit.karate.TestUtils.*;
+
+import com.intuit.karate.BranchDataStructure;
+import com.intuit.karate.TestUtils.FeatureBuilder;
 import com.intuit.karate.http.HttpClient;
 import com.intuit.karate.http.HttpRequestBuilder;
 import com.intuit.karate.http.Response;
@@ -317,6 +320,12 @@ class MockHandlerTest {
                 .contentType("application/xml");
         handle();
         match(response.getBodyAsString(), "NULL");        
-    }    
+    }
+    
+    @Test
+    void logCoverageResult() {
+        BranchDataStructure bds = new BranchDataStructure(25, "handler");
+        bds.logResults();
+    }
 
 }
