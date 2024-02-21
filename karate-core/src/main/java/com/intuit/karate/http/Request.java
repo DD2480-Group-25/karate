@@ -23,6 +23,7 @@
  */
 package com.intuit.karate.http;
 
+import com.intuit.karate.BranchDataStructure;
 import com.intuit.karate.FileUtils;
 import com.intuit.karate.JsonUtils;
 import com.intuit.karate.StringUtils;
@@ -529,52 +530,90 @@ public class Request implements ProxyObject {
 
     @Override
     public Object getMember(String key) {
+        BranchDataStructure bds = new BranchDataStructure(26, "getmember");
+        bds.setFlag(0);
         switch (key) {
             case METHOD:
+                bds.setFlag(1); 
+                bds.saveFlags();
                 return method;
             case BODY:
+                bds.setFlag(2);
                 return JsValue.fromJava(getBodyConverted());
             case BODY_STRING:
+                bds.setFlag(3);
                 return getBodyAsString();
             case BODY_BYTES:
+                bds.setFlag(4);
                 return body;
             case PARAM:
+                bds.setFlag(5);
                 return PARAM_FUNCTION;
             case PARAM_INT:
+                bds.setFlag(6);
                 return (Function<String, Integer>) this::getParamInt;
             case PARAM_BOOL:
+                bds.setFlag(7);
                 return (Function<String, Boolean>) this::getParamBool;
             case PARAM_JSON:
+                bds.setFlag(8);
                 return (Function<String, Object>) this::getParamJson;
             case PARAM_EXISTS:
+                bds.setFlag(7);
                 return (Function<String, Boolean>) this::getParamExists;    
             case PATH:
+                bds.setFlag(8);
                 return path;
             case PATH_RAW:
+                bds.setFlag(9);
                 return getPathRaw();
             case URL_BASE:
+                bds.setFlag(10);
+                bds.saveFlags();
                 return urlBase;
             case URL:
+                bds.setFlag(11);
+                bds.saveFlags();
                 return urlAndPath;
             case PARAMS:
+                bds.setFlag(12);
+                bds.saveFlags();
                 return JsValue.fromJava(params);
             case PATH_PARAM:
+                bds.setFlag(13);
+                bds.saveFlags();
                 return getPathParam();
             case PATH_PARAMS:
+                bds.setFlag(14);
+                bds.saveFlags();
                 return JsValue.fromJava(pathParams);
             case PATH_MATCHES:
+                bds.setFlag(15);
+                bds.saveFlags();
                 return (Function<String, Object>) this::pathMatches;
             case PATH_PATTERN:
+                bds.setFlag(16);
+                bds.saveFlags();
                 return pathPattern;
             case HEADER:
+                bds.setFlag(17);
+                bds.saveFlags();
                 return (Function<String, String>) this::getHeader;
             case HEADERS:
+                bds.setFlag(18);
+                bds.saveFlags();
                 return JsValue.fromJava(JsonUtils.simplify(headers));
             case HEADER_VALUES:
+                bds.setFlag(19);
+                bds.saveFlags();
                 return (Function<String, List<String>>) this::getHeaderValues;
             case MULTI_PART:
+                bds.setFlag(20);
+                bds.saveFlags();
                 return (Function<String, Object>) this::getMultiPartAsJsValue;
             case MULTI_PARTS:
+                bds.setFlag(21);
+                bds.saveFlags();
                 return JsValue.fromJava(multiParts);
             case GET:
             case POST:
@@ -585,13 +624,21 @@ public class Request implements ProxyObject {
             case CONNECT:
             case OPTIONS:
             case TRACE:
+                bds.setFlag(22);
+                bds.saveFlags();
                 return method.toLowerCase().equals(key);
             case START_TIME:
+                bds.setFlag(23);
+                bds.saveFlags();
                 return startTime;
             case END_TIME:
+                bds.setFlag(24);
+                bds.saveFlags();
                 return endTime;
             default:
                 logger.warn("no such property on request object: {}", key);
+                bds.setFlag(25);
+                bds.saveFlags();
                 return null;
         }
     }
