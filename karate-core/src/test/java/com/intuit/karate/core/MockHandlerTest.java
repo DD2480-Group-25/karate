@@ -1,6 +1,9 @@
 package com.intuit.karate.core;
 
 import static com.intuit.karate.TestUtils.*;
+
+import com.intuit.karate.BranchDataStructure;
+import com.intuit.karate.TestUtils.FeatureBuilder;
 import com.intuit.karate.http.HttpClient;
 import com.intuit.karate.http.HttpRequestBuilder;
 import com.intuit.karate.http.Response;
@@ -35,6 +38,14 @@ class MockHandlerTest {
 
     private Response handle() {
         handler = new MockHandler(feature.build());
+        response = handler.handle(request.build().toRequest());
+        request = new HttpRequestBuilder(client).method("GET");
+        return response;
+    }
+
+    private Response handle1(boolean corsEnabled) {
+        handler = new MockHandler(feature.build());
+        handler.setCors(corsEnabled);
         response = handler.handle(request.build().toRequest());
         request = new HttpRequestBuilder(client).method("GET");
         return response;
@@ -317,6 +328,59 @@ class MockHandlerTest {
                 .contentType("application/xml");
         handle();
         match(response.getBodyAsString(), "NULL");        
-    }    
+    }
+
+    // Author: Carl
+    // Requirement: The CORS should be enable, and the method should be OPTIONS
+    @Test
+    void testCorsPreflight() {
+        // Setup a CORS preflight request scenario
+        background().scenario(
+                "pathMatches('/hello')",
+                "methodIs('options')",
+                // Assuming the response setup includes CORS headers based on the incoming request
+                "def responseHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }",
+                "def response = {}" // An empty response body is assumed; adjust as needed
+        );
+        request.url("/hello")
+        .method("OPTIONS");
+
+        // Execute the handler with CORS enabled
+        handle1(true);
+
+        // Assert the response headers for CORS preflight
+        // Using match function from Karate for assertions
+        match(response.getHeader("Access-Control-Allow-Origin"), "*");
+        match(response.getHeader("Access-Control-Allow-Methods"), "GET, HEAD, POST, PUT, DELETE, PATCH");
+    }
+
+     // Author: Carl
+    // Requirement: The headers are not null;
+    @Test
+    void testNotNullHeaders() {
+        // Setup a CORS preflight request scenario
+        background().scenario(
+                "pathMatches('/hello')",
+                "methodIs('options')",
+                // Assuming the response setup includes CORS headers based on the incoming request
+                "def responseHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }",
+                "def response = {}" // An empty response body is assumed; adjust as needed
+        );
+        request.url("/hello")
+            .method("OPTIONS")
+            .header("Access-Control-Request-Headers", "Content-Type");
+
+        // Execute the handler with CORS enabled
+        handle1(true);
+
+        // Assert the response headers
+        match(response.getHeader("Access-Control-Allow-Headers"), "Content-Type");
+    } 
+
+    @Test
+    void logCoverageResult() {
+        BranchDataStructure bds = new BranchDataStructure(25, "handler");
+        bds.logResults();
+    }
 
 }

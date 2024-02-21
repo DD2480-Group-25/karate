@@ -26,6 +26,7 @@ package com.intuit.karate.core;
 import com.intuit.karate.ScenarioActions;
 import com.intuit.karate.Suite;
 import com.intuit.karate.StringUtils;
+import com.intuit.karate.BranchDataStructure;
 import com.intuit.karate.Json;
 import com.intuit.karate.KarateException;
 import com.intuit.karate.graal.JsValue;
@@ -77,6 +78,9 @@ public class MockHandler implements ServerHandler {
     protected static final ThreadLocal<Request> LOCAL_REQUEST = new ThreadLocal<>();
     private final String prefix;
 
+    public void setCors(boolean corsEnabled){
+        this.corsEnabled = corsEnabled;
+    }
     public MockHandler(Feature feature) {
         this(feature, null);
     }
@@ -151,24 +155,31 @@ public class MockHandler implements ServerHandler {
 
     @Override
     public synchronized Response handle(Request req) { // note the [synchronized]
-        if (corsEnabled && "OPTIONS".equals(req.getMethod())) {
+        BranchDataStructure bds = new BranchDataStructure(25, "handler");
+        bds.setFlag(0);
+        if (corsEnabled && "OPTIONS".equals(req.getMethod())) { // Branch 1
+            bds.setFlag(1);
             Response response = new Response(200);
             response.setHeader("Allow", ALLOWED_METHODS);
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Access-Control-Allow-Methods", ALLOWED_METHODS);
             List<String> requestHeaders = req.getHeaderValues("Access-Control-Request-Headers");
-            if (requestHeaders != null) {
+            if (requestHeaders != null) {// Branch 2
+                bds.setFlag(2);
                 response.setHeader("Access-Control-Allow-Headers", requestHeaders);
             }
+            bds.saveFlags();
             return response;
         }
-        if (prefix != null && req.getPath().startsWith(prefix)) {
+        if (prefix != null && req.getPath().startsWith(prefix)) { // Branch 3
+            bds.setFlag(3);
             req.setPath(req.getPath().substring(prefix.length()));
         }
         // rare case when http-client is active within same jvm
         // snapshot existing thread-local to restore
         ScenarioEngine prevEngine = ScenarioEngine.get();
-        for (Map.Entry<Feature, ScenarioRuntime> entry : scenarioRuntimes.entrySet()) {
+        for (Map.Entry<Feature, ScenarioRuntime> entry : scenarioRuntimes.entrySet()) { // Branch 4
+            bds.setFlag(4);
             Feature feature = entry.getKey();
             ScenarioRuntime runtime = entry.getValue();
             // important for graal to work properly
@@ -176,13 +187,16 @@ public class MockHandler implements ServerHandler {
             LOCAL_REQUEST.set(req);
             req.processBody();
             ScenarioEngine engine = initEngine(runtime, globals, req);
-            for (FeatureSection fs : feature.getSections()) {
-                if (fs.isOutline()) {
+            for (FeatureSection fs : feature.getSections()) { // Branch 5
+                bds.setFlag(5);
+                if (fs.isOutline()) { // Branch 6
+                    bds.setFlag(6);
                     runtime.logger.warn("skipping scenario outline - {}:{}", feature, fs.getScenarioOutline().getLine());
                     break;
                 }
                 Scenario scenario = fs.getScenario();
-                if (isMatchingScenario(scenario, engine)) {
+                if (isMatchingScenario(scenario, engine)) { // Branch 7
+                    bds.setFlag(7);
                     Map<String, Object> configureHeaders;
                     Variable response, responseStatus, responseHeaders, responseDelay;
                     ScenarioActions actions = new ScenarioActions(engine);
@@ -195,44 +209,69 @@ public class MockHandler implements ServerHandler {
                     responseDelay = engine.vars.remove(RESPONSE_DELAY);
                     globals.putAll(engine.shallowCloneVariables());
                     Response res = new Response(200);
-                    if (result.isFailed()) {
+                    if (result.isFailed()) { // Branch 8
+                        bds.setFlag(8);
                         response = new Variable(result.getError().getMessage());
                         responseStatus = new Variable(500);
-                    } else {
-                        if (corsEnabled) {
+                    } else { // Branch 9
+                        bds.setFlag(9);
+                        if (corsEnabled) { // Branch 10
+                            bds.setFlag(10);
                             res.setHeader("Access-Control-Allow-Origin", "*");
+                        } else { // Implicit branch 19
+                            bds.setFlag(19);
                         }
                         res.setHeaders(configureHeaders);
-                        if (responseHeaders != null && responseHeaders.isMap()) {
+                        if (responseHeaders != null && responseHeaders.isMap()) { // Branch 11
+                            bds.setFlag(11);
                             res.setHeaders(responseHeaders.getValue());
+                        } else { // Implicit branch 20
+                            bds.setFlag(20);
                         }
-                        if (responseDelay != null) {
+                        if (responseDelay != null) { // Branch 12
+                            bds.setFlag(12);
                             res.setDelay(responseDelay.getAsInt());
+                        } else { // Implicit branch 21
+                            bds.setFlag(21);
                         }
                     }
-                    if (response != null && !response.isNull()) {
+                    if (response != null && !response.isNull()) { // Branch 13
+                        bds.setFlag(13);
                         res.setBody(response.getAsByteArray());
-                        if (res.getContentType() == null) {
+                        if (res.getContentType() == null) { // Branch 14
+                            bds.setFlag(14);
                             ResourceType rt = ResourceType.fromObject(response.getValue());
-                            if (rt != null) {
+                            if (rt != null) { // Branch 15
+                                bds.setFlag(15);
                                 res.setContentType(rt.contentType);
                             }
                         }
+                    } else { // Implicit branch 22
+                        bds.setFlag(22);
                     }
-                    if (responseStatus != null) {
+                    if (responseStatus != null) { // Branch 16
+                        bds.setFlag(16);
                         res.setStatus(responseStatus.getAsInt());
+                    } else { // Implicit branch 23
+                        bds.setFlag(23);
                     }
-                    if (prevEngine != null) {
+                    if (prevEngine != null) { // Branch 17
+                        bds.setFlag(17);
                         ScenarioEngine.set(prevEngine);
+                    } else { // Implicit branch 24
+                        bds.setFlag(24);
                     }
+                    bds.saveFlags();
                     return res;
                 }
             }
         }
         logger.warn("no scenarios matched, returning 404: {}", req); // NOTE: not logging with engine.logger
-        if (prevEngine != null) {
+        if (prevEngine != null) { // Branch 18
+            bds.setFlag(18); 
             ScenarioEngine.set(prevEngine);
         }
+        bds.saveFlags();
         return new Response(404);
     }
     
