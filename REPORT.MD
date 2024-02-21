@@ -46,6 +46,13 @@ We did not run any examples but the tests run seamlessly.
 4. There are no exceptions
 5. The function was not clearly documented, but is quite self-explanatory
 
+### MockHandler:handle
+1. Lizard ran once on this method, the result of cyclomatic complexity is 22. Manually counting the if/else, for loops and logical operators gives the same result. The result is not very clear, many if:s are missing else, so implicit branches may exist.
+2. This method contains 82 lines of code, it’s reasonable considering its functionality and CC.
+3. The purpose of this method is to process HTTP requests and generate responses based on a variety of conditions and scenarios.
+4. Yes, exceptions are taken into account as exit points but they do not appear in this method.
+5. The function is not clearly documented about the different possible outcomes induced by different branches taken.
+
 **GUIDELINES**
 1. What are your results for five complex functions?
    * Did all methods (tools vs. manual count) get the same result?
@@ -62,6 +69,11 @@ Our plan for refactoring the code involves breaking it down into distinct setter
 
 ### Request::getMethod
 Our plan for refactoring the code is similar to config as it too is a large collection of cases, which can be broken down into setter functions. Again, the estimated impact is a minimized CC and no loss of practicality.
+
+### MockHandler::handle
+Our plan for refactoring MockHandler.handle is to refactor it into smaller method, for example: one for handling CORS, one for processing the request body, one for executing scenarios, and so on. Since many variables are shared in the class, this method should not have any impact to its functionality. Furthermore, instead of hardcoding HTTP status code, using enum would perhaps be easier to understand for future contributors.
+
+
 
 **GUIDELINES**
 Plan for refactoring complex code:
@@ -270,6 +282,71 @@ We added the following 8 test cases:
         request.setEndTime(200);
         assertEquals(200L, request.getMember("endTime"));
     }
+```
+
+### MockHandler:handle
+
+**Old coverage:**
+
+![alt text](images/handle-old1.png)
+![alt text](images/handle-old2.png)
+
+**New coverage:**
+
+![alt text](images/handle-new1.png)
+![alt text](images/handle-new2.png)
+
+**Test cases added:**
+
+2 test cases added.
+
+```json
+    // Author: Carl
+    // Requirement: The CORS should be enable, and the method should be OPTIONS
+    @Test
+    void testCorsPreflight() {
+        // Setup a CORS preflight request scenario
+        background().scenario(
+                "pathMatches('/hello')",
+                "methodIs('options')",
+                // Assuming the response setup includes CORS headers based on the incoming request
+                "def responseHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }",
+                "def response = {}" // An empty response body is assumed; adjust as needed
+        );
+        request.url("/hello")
+        .method("OPTIONS");
+
+        // Execute the handler with CORS enabled
+        handle1(true);
+
+        // Assert the response headers for CORS preflight
+        // Using match function from Karate for assertions
+        match(response.getHeader("Access-Control-Allow-Origin"), "*");
+        match(response.getHeader("Access-Control-Allow-Methods"), "GET, HEAD, POST, PUT, DELETE, PATCH");
+    }
+
+     // Author: Carl
+    // Requirement: The headers are not null;
+    @Test
+    void testNotNullHeaders() {
+        // Setup a CORS preflight request scenario
+        background().scenario(
+                "pathMatches('/hello')",
+                "methodIs('options')",
+                // Assuming the response setup includes CORS headers based on the incoming request
+                "def responseHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }",
+                "def response = {}" // An empty response body is assumed; adjust as needed
+        );
+        request.url("/hello")
+            .method("OPTIONS")
+            .header("Access-Control-Request-Headers", "Content-Type");
+
+        // Execute the handler with CORS enabled
+        handle1(true);
+
+        // Assert the response headers
+        match(response.getHeader("Access-Control-Allow-Headers"), "Content-Type");
+    } 
 ```
 
 ## Self-assessment: Way of working
