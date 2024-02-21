@@ -78,6 +78,9 @@ public class MockHandler implements ServerHandler {
     protected static final ThreadLocal<Request> LOCAL_REQUEST = new ThreadLocal<>();
     private final String prefix;
 
+    public void setCors(boolean corsEnabled){
+        this.corsEnabled = corsEnabled;
+    }
     public MockHandler(Feature feature) {
         this(feature, null);
     }
