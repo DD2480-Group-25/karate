@@ -64,8 +64,7 @@ public class BranchDataStructure {
                 count++;
             }
         }
-        double result = count / branchCount * 100;
-        return result;
+        return count / branchCount * 100;
     }
 
     public void logResults() {
@@ -79,14 +78,14 @@ public class BranchDataStructure {
                     System.out.print(i + ", ");
                 }
             }
-            System.out.println("");
+            System.out.println();
             System.out.println("The following branches were NOT taken:");
             for (int i = 0; i < branchCount; i++) {
                 if (!flags[i]) {
                         System.out.print(i + ", ");
                     }
                 }
-            System.out.println("");
+            System.out.println();
         } else {
             System.out.println("All the branches were taken, yay");
         }
