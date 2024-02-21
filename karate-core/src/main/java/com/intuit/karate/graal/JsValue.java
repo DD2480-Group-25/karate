@@ -23,6 +23,7 @@
  */
 package com.intuit.karate.graal;
 
+import com.intuit.karate.BranchDataStructure;
 import com.intuit.karate.JsonUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -61,40 +62,55 @@ public class JsValue {
     public final Type type;
 
     public JsValue(Value v) {
-        if (v == null) {
+        BranchDataStructure bds = new BranchDataStructure(27, "jsvalue");
+        bds.setFlag(0);
+        if (v == null) { // Branch 1
+            bds.setFlag(1);
             throw new RuntimeException("JsValue() constructor argument has to be not-null");
         }
         this.original = v;
-        try {
-            if (v.isNull()) {
+        try { // Branch 2
+            bds.setFlag(2);
+            if (v.isNull()) { // Branch 3
+                bds.setFlag(3);
                 value = null;
                 type = Type.NULL;
-            } else if (v.isHostObject()) {
-                if (v.isMetaObject()) { // java.lang.Class !
+            } else if (v.isHostObject()) { // Branch 4
+                bds.setFlag(4);
+                if (v.isMetaObject()) { // java.lang.Class ! Branch 5
+                    bds.setFlag(5);
                     value = v; // special case, keep around as graal value
-                } else {
+                } else { // Branch 6
+                    bds.setFlag(6);
                     value = v.asHostObject();
                 }
                 type = Type.OTHER;
-            } else if (v.isProxyObject()) {
+            } else if (v.isProxyObject()) { // Branch 7
+                bds.setFlag(7);
                 Object o = v.asProxyObject();
-                if (o instanceof JsXml) {
+                if (o instanceof JsXml) { // Branch 8
+                    bds.setFlag(8);
                     value = ((JsXml) o).getNode();
                     type = Type.XML;
-                } else if (o instanceof JsMap) {
+                } else if (o instanceof JsMap) { // Branch 9
+                    bds.setFlag(9);
                     value = ((JsMap) o).getMap();
                     type = Type.OBJECT;
-                } else if (o instanceof JsList) {
+                } else if (o instanceof JsList) { // Branch 10
+                    bds.setFlag(10);
                     value = ((JsList) o).getList();
                     type = Type.ARRAY;
-                } else if (o instanceof ProxyExecutable) {
+                } else if (o instanceof ProxyExecutable) { // Branch 11
+                    bds.setFlag(11);
                     value = o;
                     type = Type.FUNCTION;
-                } else { // e.g. custom bridge, e.g. Request
+                } else { // e.g. custom bridge, e.g. Request Branch 12
+                    bds.setFlag(12);
                     value = v.as(Object.class);
                     type = Type.OTHER;
                 }
-            } else if (v.hasArrayElements()) {
+            } else if (v.hasArrayElements()) { // Branch 13
+                bds.setFlag(13);
                 int size = (int) v.getArraySize();
                 List list = new ArrayList(size);
                 for (int i = 0; i < size; i++) {
@@ -103,17 +119,22 @@ public class JsValue {
                 }
                 value = list;
                 type = Type.ARRAY;
-            } else if (v.hasMembers()) {
-                if (v.canExecute()) {
-                    if (v.canInstantiate()) {
+            } else if (v.hasMembers()) { // Branch 14
+                bds.setFlag(14);
+                if (v.canExecute()) { // Branch 15
+                    bds.setFlag(15);
+                    if (v.canInstantiate()) { // Branch 16
+                        bds.setFlag(16);
                         // js functions have members, can be executed and are instantiable
                         value = new JsFunction.Instantiable(v);
-                    } else {
+                    } else { // Branch 17
+                        bds.setFlag(17);
                         // js, but anonymous / arrow function
                         value = new JsFunction.Executable(v);
                     }
                     type = Type.FUNCTION;
-                } else {
+                } else { // Branch 18
+                    bds.setFlag(18);
                     Set<String> keys = v.getMemberKeys();
                     Map<String, Object> map = new LinkedHashMap(keys.size());
                     for (String key : keys) {
@@ -123,25 +144,33 @@ public class JsValue {
                     value = map;
                     type = Type.OBJECT;
                 }
-            } else if (v.isNumber()) {
+            } else if (v.isNumber()) { // Branch 19
+                bds.setFlag(19);
                 value = v.as(Number.class);
                 type = Type.OTHER;
-            } else if (v.isBoolean()) {
+            } else if (v.isBoolean()) { // Branch 20
+                bds.setFlag(20);
                 value = v.asBoolean();
                 type = Type.OTHER;
-            } else if (v.isString()) {
+            } else if (v.isString()) { // Branch 21
+                bds.setFlag(21);
                 value = v.asString();
                 type = Type.OTHER;
-            } else {
+            } else { // Branch 22
+                bds.setFlag(22);
                 value = v.as(Object.class);
-                if (value instanceof Function) {
+                if (value instanceof Function) { // Branch 23
+                    bds.setFlag(23);
                     type = Type.FUNCTION;
-                } else {
+                } else { // Branch 24
+                    bds.setFlag(24);
                     type = Type.OTHER;
                 }
             }
-        } catch (Exception e) {
-            if (logger.isTraceEnabled()) {
+        } catch (Exception e) { // Branch 25
+            bds.setFlag(25);
+            if (logger.isTraceEnabled()) { // Branch 26
+                bds.setFlag(26);
                 logger.trace("js conversion failed", e);
             }
             throw e;
