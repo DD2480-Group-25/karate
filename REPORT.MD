@@ -72,10 +72,10 @@ We did not run any examples but the tests run seamlessly.
 ## Refactoring
 
 ### Config::configure
-Our plan for refactoring the code involves breaking it down into distinct setter functions, instead of one large switch monster function. The estimated impact of this refactoring is a minimized CC and no loss of practicality.
+Our plan for refactoring the code involves breaking it down into distinct setter functions, instead of one large switch monster function, and simplifying the control flow. The estimated impact of this refactoring is a minimized CC and no loss of practicality, though there is always a risk of introducing bugs if the new functions are not tested properly. Refactoring the function this way will also improve its modularity and readability, making it easier to maintain. 
 
 ### Request::getMethod
-Our plan for refactoring the code is similar to config as it too is a large collection of cases, which can be broken down into setter functions. Again, the estimated impact is a minimized CC and no loss of practicality.
+Our plan for refactoring the code is similar to config as it too is a large collection of cases, which can be broken down into smaller functions. For example, a possible refactoring could be separate methods to handle each property retrieval. Again, the estimated impact is a minimized CC, increased readability and no loss of practicality.
 
 ### MockHandler::handle
 Our plan for refactoring MockHandler.handle is to refactor it into smaller method, for example: one for handling CORS, one for processing the request body, one for executing scenarios, and so on. Since many variables are shared in the class, this method should not have any impact to its functionality. Furthermore, instead of hardcoding HTTP status code, using enum would perhaps be easier to understand for future contributors.
@@ -359,13 +359,11 @@ We added the following 8 test cases:
 
 ## Self-assessment: Way of working
 
-Current state according to the Essence standard: ...
+In evaluating our way of working, we have seen large improvements within many aspects, compared to after lab 1. We found that the process of establishing the principles as well as the foundation of the new projects go much faster, as we have a better understanding of each member's schedules and how they prefer to work. This allows us to have effective start-up meetings, where we can focus entirely on the aspects related to the assignment, rather than on, for example, establishing standards of communication. In this lab, we decided on the “karate” git repo as our project to work on. Furthermore, we decided to use lizard as our tool to measure metrics and OpenClover as our code coverage tool. After that, we allowed members to freely choose which function they would like to work on, as long as its CCN was high enough. Overall, our self-assessment was unanimous.
 
-Was the self-assessment unanimous? Any doubts about certain items?
+After completing assignment 3, we believe that we are currently in the in place state. This is one state higher than in lab 1, where we evaluated ourselves to be in the in use state. One of the biggest improvements we’ve seen is in our commit messages, as this was previously a challenge for us. We feel that all team members have been much more consistent in their commit messages due to us establishing a clear structure to follow after assignment 1. In improving our commit messages, we have improved the communication and collaboration that takes place on github, as they simplify searching for issues and generally result in a “cleaner” and easier to understand repository.
 
-How have you improved so far?
-
-Where is potential for improvement?
+The challenge we are currently facing is completing the last step in the in place state; “The whole team is involved in the inspection and adaptation of the way-of-working”. We feel that the practices we have established are used unanimously among the group. However, upon reflection, there is room for improvement when it comes to inspecting how our way-of-working can be affected by, for example, new assignments, as well as how we can better adapt to them. 
 
 ## Overall experience
 
