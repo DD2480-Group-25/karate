@@ -352,6 +352,29 @@ class MockHandlerTest {
         // Using match function from Karate for assertions
         match(response.getHeader("Access-Control-Allow-Origin"), "*");
         match(response.getHeader("Access-Control-Allow-Methods"), "GET, HEAD, POST, PUT, DELETE, PATCH");
+    }
+
+     // Author: Carl
+    // Requirement: The headers are not null;
+    @Test
+    void testNotNullHeaders() {
+        // Setup a CORS preflight request scenario
+        background().scenario(
+                "pathMatches('/hello')",
+                "methodIs('options')",
+                // Assuming the response setup includes CORS headers based on the incoming request
+                "def responseHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }",
+                "def response = {}" // An empty response body is assumed; adjust as needed
+        );
+        request.url("/hello")
+            .method("OPTIONS")
+            .header("Access-Control-Request-Headers", "Content-Type");
+
+        // Execute the handler with CORS enabled
+        handle1(true);
+
+        // Assert the response headers
+        match(response.getHeader("Access-Control-Allow-Headers"), "Content-Type");
     } 
 
     @Test
