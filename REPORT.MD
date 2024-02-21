@@ -33,11 +33,18 @@ We did not run any examples but the tests run seamlessly.
 ## Complexity
 
 ### Config::configure
-1. We ran lizard twice, once with default settings and once with the modified settings, counting the "switch" as one decision point. The first run gave a CCN of 60, the second one gave a CCN of 24. We obtained the same values by hand. We got 60 by counting the decision points for the function, and we got 24 by adding the number of cases with the number of if-statements and then subtracting that value with the number of exit points, and then adding 2. ((1+37+17)-33+2). We think the results are quite clear.
+1. We ran lizard twice, once with default settings and once with the modified settings, counting the "switch" as one decision point. The first run gave a CCN of 60, the second one gave a CCN of 24. We obtained the same values by hand. We got 60 by counting the decision points for the function + 1, and we got 24 by adding the number of cases with the number of if-statements and then subtracting that value with the number of exit points, and then adding 2. ((1+37+17)-33+2). We think the results are quite clear.
 2. This function is not very complex, it is just very long
 3. The purpose of the function is to configure the program.
 4. Exceptions are taken into account as exit points.
 5. The function was not clearly documented.
+
+### Request::getMember
+1. We ran lizard twice, once with default settings and once with the modified settings, counting the "switch" as one decision point. The first run gave a CCN of 35, the second one gave a CCN of 2. We obtained the same values by hand. We got 35 by counting the decision points for the function + 1, and we got 2 by counting the number of cases and then subtracting that value with the number of exit points, and then adding 2. (26-26+2). We think the results are quite clear.
+2. This function is not very complex, it is just very long again.
+3. The purpose of the function is get the requests attribute with a string rather than with a getter
+4. There are no excpetions
+5. The function was not clearly documented, but is quite self-explanatory
 
 **GUIDELINES**
 1. What are your results for five complex functions?
