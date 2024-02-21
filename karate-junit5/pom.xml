@@ -38,6 +38,13 @@
                 </excludes>
             </testResource>
         </testResources>
+        <plugins>
+            <plugin>
+                    <groupId>org.openclover</groupId>
+                    <artifactId>clover-maven-plugin</artifactId>
+                    <version>4.2.0</version>
+            </plugin>   
+        </plugins>
     </build>           
     
 </project>
