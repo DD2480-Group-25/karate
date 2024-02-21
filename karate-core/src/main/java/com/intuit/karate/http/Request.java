@@ -539,33 +539,43 @@ public class Request implements ProxyObject {
                 return method;
             case BODY:
                 bds.setFlag(2);
+                bds.saveFlags();
                 return JsValue.fromJava(getBodyConverted());
             case BODY_STRING:
                 bds.setFlag(3);
+                bds.saveFlags();
                 return getBodyAsString();
             case BODY_BYTES:
                 bds.setFlag(4);
+                bds.saveFlags();
                 return body;
             case PARAM:
                 bds.setFlag(5);
+                bds.saveFlags();
                 return PARAM_FUNCTION;
             case PARAM_INT:
                 bds.setFlag(6);
+                bds.saveFlags();
                 return (Function<String, Integer>) this::getParamInt;
             case PARAM_BOOL:
                 bds.setFlag(7);
+                bds.saveFlags();
                 return (Function<String, Boolean>) this::getParamBool;
             case PARAM_JSON:
                 bds.setFlag(8);
+                bds.saveFlags();
                 return (Function<String, Object>) this::getParamJson;
             case PARAM_EXISTS:
                 bds.setFlag(7);
+                bds.saveFlags();
                 return (Function<String, Boolean>) this::getParamExists;    
             case PATH:
                 bds.setFlag(8);
+                bds.saveFlags();
                 return path;
             case PATH_RAW:
                 bds.setFlag(9);
+                bds.saveFlags();
                 return getPathRaw();
             case URL_BASE:
                 bds.setFlag(10);
