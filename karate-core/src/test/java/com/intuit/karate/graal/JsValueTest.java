@@ -31,6 +31,7 @@ public class JsValueTest {
         assertTrue(JsValue.isTruthy(Collections.emptyMap()));
     }
 
+    @Test
     void testToJavaString() {
         // Test the toJava method with string
         Value stringValue = Value.asValue("Hello");
