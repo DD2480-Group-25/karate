@@ -53,6 +53,13 @@ We did not run any examples but the tests run seamlessly.
 4. Yes, exceptions are taken into account as exit points but they do not appear in this method.
 5. The function is not clearly documented about the different possible outcomes induced by different branches taken.
 
+### JsValue:JsValue
+1. Lizard ran once on this method, the result of cyclomatic complexity is 22. Manually counting the if/else, for loops and logical operators gives the same result. The result is not very clear, many if:s are missing else, so implicit branches may exist.
+2. This method contains 85 lines of code, it’s reasonable considering its functionality and CC.
+3. The method is a constructor to the JsValue class.
+4. Yes, exceptions are taken into account as exit points.
+5. The function is not clearly documented about the different possible outcomes induced by different branches taken.
+
 **GUIDELINES**
 1. What are your results for five complex functions?
    * Did all methods (tools vs. manual count) get the same result?
@@ -73,7 +80,8 @@ Our plan for refactoring the code is similar to config as it too is a large coll
 ### MockHandler::handle
 Our plan for refactoring MockHandler.handle is to refactor it into smaller method, for example: one for handling CORS, one for processing the request body, one for executing scenarios, and so on. Since many variables are shared in the class, this method should not have any impact to its functionality. Furthermore, instead of hardcoding HTTP status code, using enum would perhaps be easier to understand for future contributors.
 
-
+### JsValue::JsValue
+Our plan for refactoring JsValue.JsValue is to implement a switch case instead of a bunch of if statements since it mostly check for type. Then break up the switch cases into help functions if its need more logic.
 
 **GUIDELINES**
 Plan for refactoring complex code:
