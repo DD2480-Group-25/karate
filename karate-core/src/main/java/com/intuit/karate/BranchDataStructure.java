@@ -31,6 +31,13 @@ public class BranchDataStructure {
         }
     }
 
+    public void delete_file() {
+        if (fileExists(name)) {
+            File f = new File(name);
+            f.delete();
+        }
+    }
+
     public void setFlag(int id) {
         if (id >= 0 && id < branchCount) {
             flags[id] = true;
