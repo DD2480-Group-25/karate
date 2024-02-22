@@ -327,11 +327,11 @@ We added the following 8 test cases:
 
 **Old coverage:**
 
-![before.png](..%2Fbefore.png)
+![before.png](images/before.png)
 
 **New coverage:**
 
-![after.png](..%2Fafter.png)
+![after.png](images/after.png)
 
 **Test cases added:**
 
