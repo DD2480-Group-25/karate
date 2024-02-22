@@ -357,6 +357,56 @@ We added the following 8 test cases:
     } 
 ```
 
+### MockHandler:handle
+
+**Old coverage:**
+
+![before.png](..%2Fbefore.png)
+
+**New coverage:**
+
+![after.png](..%2Fafter.png)
+
+**Test cases added:**
+
+4 test cases added.
+
+```json
+// Author Rikard
+@Test
+void testToJavaString() {
+  // Test the toJava method with string
+  Value stringValue = Value.asValue("Hello");
+  Object javaObject = JsValue.toJava(stringValue);
+  assertEquals("Hello", javaObject);
+}
+
+@Test
+void testToJavaInt() {
+  // Test the toJava method with int
+  Value intValue = Value.asValue(2);
+  Object javaObject = JsValue.toJava(intValue);
+  assertEquals(2, javaObject);
+}
+
+@Test
+void testToJavaBoolean() {
+  // Test the toJava method with boolean
+  Value intValue = Value.asValue(true);
+  Object javaObject = JsValue.toJava(intValue);
+  assertEquals(true, javaObject);
+}
+
+@Test
+void testToJavaArray() {
+  // Test the toJava method with array
+  int[] intArray = new int[]{ 1,2,3,4,5,6,7,8,9,10 };
+  Value intValue = Value.asValue(intArray);
+  Object javaObject = JsValue.toJava(intValue);
+  assertEquals(intArray, javaObject);
+}
+```
+
 ## Self-assessment: Way of working
 
 Current state according to the Essence standard: ...
