@@ -60,37 +60,19 @@ We did not run any examples but the tests run seamlessly.
 4. Yes, exceptions are taken into account as exit points.
 5. The function is not clearly documented about the different possible outcomes induced by different branches taken.
 
-**GUIDELINES**
-1. What are your results for five complex functions?
-   * Did all methods (tools vs. manual count) get the same result?
-   * Are the results clear?
-2. Are the functions just complex, or also long?
-3. What is the purpose of the functions?
-4. Are exceptions taken into account in the given measurements?
-5. Is the documentation clear w.r.t. all the possible outcomes?
-
 ## Refactoring
 
 ### Config::configure
-Our plan for refactoring the code involves breaking it down into distinct setter functions, instead of one large switch monster function. The estimated impact of this refactoring is a minimized CC and no loss of practicality.
+Our plan for refactoring the code involves breaking it down into distinct setter functions, instead of one large switch monster function, and simplifying the control flow. The estimated impact of this refactoring is a minimized CC and no loss of practicality, though there is always a risk of introducing bugs if the new functions are not tested properly. Refactoring the function this way will also improve its modularity and readability, making it easier to maintain. 
 
-### Request::getMethod
-Our plan for refactoring the code is similar to config as it too is a large collection of cases, which can be broken down into setter functions. Again, the estimated impact is a minimized CC and no loss of practicality.
+### Request::getMember
+Our plan for refactoring the code is similar to config as it too is a large collection of cases, which can be broken down into smaller functions. For example, a possible refactoring could be separate methods to handle each property retrieval. Again, the estimated impact is a minimized CC, increased readability and no loss of practicality.
 
 ### MockHandler::handle
 Our plan for refactoring MockHandler.handle is to refactor it into smaller method, for example: one for handling CORS, one for processing the request body, one for executing scenarios, and so on. Since many variables are shared in the class, this method should not have any impact to its functionality. Furthermore, instead of hardcoding HTTP status code, using enum would perhaps be easier to understand for future contributors.
 
 ### JsValue::JsValue
 Our plan for refactoring JsValue.JsValue is to implement a switch case instead of a bunch of if statements since it mostly check for type. Then break up the switch cases into help functions if its need more logic.
-
-**GUIDELINES**
-Plan for refactoring complex code:
-
-Estimated impact of refactoring (lower CC, but other drawbacks?).
-
-Carried out refactoring (optional, P+):
-
-git diff ...
 
 ## Coverage
 
@@ -121,20 +103,6 @@ its output?
 
 ## Coverage improvement
 
-### Overall: 
-
-Show the comments that describe the requirements for the coverage.
-
-Report of old coverage: [link]
-
-Report of new coverage: [link]
-
-Test cases added:
-
-git diff ...
-
-Number of test cases added: two per team member (P) or at least four (P+).
-
 ### Config::configure
 
 **Old coverage:**
@@ -146,8 +114,6 @@ Number of test cases added: two per team member (P) or at least four (P+).
 
 ![alt text](images/configure-new1.png)
 ![alt text](images/configure-new2.png)
-
-![alt text](image.png)
 
 **Test cases added:**
 
@@ -409,16 +375,12 @@ void testToJavaArray() {
 
 ## Self-assessment: Way of working
 
-Current state according to the Essence standard: ...
+In evaluating our way of working, we have seen large improvements within many aspects, compared to after lab 1. We found that the process of establishing the principles as well as the foundation of the new projects go much faster, as we have a better understanding of each member's schedules and how they prefer to work. This allows us to have effective start-up meetings, where we can focus entirely on the aspects related to the assignment, rather than on, for example, establishing standards of communication. In this lab, we decided on the “karate” git repo as our project to work on. Furthermore, we decided to use lizard as our tool to measure metrics and OpenClover as our code coverage tool. After that, we allowed members to freely choose which function they would like to work on, as long as its CCN was high enough. Overall, our self-assessment was unanimous.
 
-Was the self-assessment unanimous? Any doubts about certain items?
+After completing assignment 3, we believe that we are currently in the in place state. This is one state higher than in lab 1, where we evaluated ourselves to be in the in use state. One of the biggest improvements we’ve seen is in our commit messages, as this was previously a challenge for us. We feel that all team members have been much more consistent in their commit messages due to us establishing a clear structure to follow after assignment 1. In improving our commit messages, we have improved the communication and collaboration that takes place on github, as they simplify searching for issues and generally result in a “cleaner” and easier to understand repository.
 
-How have you improved so far?
-
-Where is potential for improvement?
+The challenge we are currently facing is completing the last step in the in place state; “The whole team is involved in the inspection and adaptation of the way-of-working”. We feel that the practices we have established are used unanimously among the group. However, upon reflection, there is room for improvement when it comes to inspecting how our way-of-working can be affected by, for example, new assignments, as well as how we can better adapt to them. 
 
 ## Overall experience
 
-What are your main take-aways from this project? What did you learn?
-
-Is there something special you want to mention here?
+This project was a great way for us to get a feel for how it is to work collaboratively on an entirely new project with already set up classes and structures. At first, the large amount of folders and files was quite overwhelming and tough to navigate. It required a lot of reading in order to understand the different functions and how the project was set up. Furthermore, it required understanding of new tools, such as lizard and OpenClover. These tools were very helpful in determining which functions needed improvements. Calculating the cyclomatic complexity of functions was also new to us, and we learned how that is done via lizard but also how to do it by hand. In working with OpenClover, we could clearly see which parts of the code were lacking coverage, which was a very powerful visual. We have also used maven in this project, most of us for the first time, which will be helpful in future projects. 
