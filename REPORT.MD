@@ -80,8 +80,48 @@ Our plan for refactoring JsValue.JsValue is to implement a switch case instead o
 
 We used OpenClover with all four functions. It has been horrible to set up, as if any test from the test suite fails, the report isn't generated at all, so we had to comment out some of them so that everything could get through, and also modify stlightly some Java file that were causing errors. Also, the documentation regarding the setup with maven isn't extensive at all, making it hard to troubleshoot any issue. However, once everything is working, it is an extremely reliable and useful tool to have for a project.
 
+Instrumentation example
+
+We can see here how we instantiate our BranchDataStructure Class by telling it the number of branches and giving it a name. Then in each code block we set a flag with setFlag(id) if reached, and we save flags to disk right before each exit point with saveFlags().
+"""
+
+@Override
+    public synchronized Response handle(Request req) { // note the [synchronized]
+        BranchDataStructure bds = new BranchDataStructure(25, "handler");
+        bds.setFlag(0);
+        if (corsEnabled && "OPTIONS".equals(req.getMethod())) { // Branch 1
+            bds.setFlag(1);
+            Response response = new Response(200);
+            response.setHeader("Allow", ALLOWED_METHODS);
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Methods", ALLOWED_METHODS);
+            List<String> requestHeaders = req.getHeaderValues("Access-Control-Request-Headers");
+            if (requestHeaders != null) {// Branch 2
+                bds.setFlag(2);
+                response.setHeader("Access-Control-Allow-Headers", requestHeaders);
+            }
+            bds.saveFlags();
+            return response;
+        }
+        if (prefix != null && req.getPath().startsWith(prefix)) { // Branch 3
+            bds.setFlag(3);
+            req.setPath(req.getPath().substring(prefix.length()));
+        }
+
+        ...
+     }
+"""
+
+The full BranchDataStructure.java file can be found in karate-core/src/main/java/com/intuit/karate/BranchDataStructure.java.
+
 ### Your own coverage tool
 
+Our own coverage tool sets flags on different branches, the branches are pick manually. When one branch is reached in a test, the flag is set. In the end of each function exit, it would create a file containing the infomation of the branches reached and not reached.
+
+### Command 
+git diff 13-mock-handler-handle-coverage-instrumention
+
+**GUIDELINES**
 Show a patch (or link to a branch) that shows the instrumented code to
 gather coverage measurements.
 
@@ -97,9 +137,15 @@ its output?
 
 1. How detailed is your coverage measurement?
 
+Very detailed, we are aware of which branches are taken and which are not. To make the coverage measurement more reliable, some implicit branches are added, for example if:s in a row without any else.
+
 2. What are the limitations of your own tool?
 
+We have to manually set flags/find branches.
+
 3. Are the results of your tool consistent with existing coverage tools?
+
+Our own coverage tool shows less coverage in percentage compared to existing coverage tools(OpenClover). The reason is that we have more flags than actual branches. For a branch not reached, it might have 2 flags. However it should not affect the result when the coverage is reached 100%. 
 
 ## Coverage improvement
 
