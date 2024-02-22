@@ -153,7 +153,7 @@ public class MockHandler implements ServerHandler {
     private static final Result PASSED = Result.passed(0, 0);
     private static final String ALLOWED_METHODS = "GET, HEAD, POST, PUT, DELETE, PATCH";
 
-    @Override
+    /*@Override
     public synchronized Response handle(Request req) { // note the [synchronized]
         BranchDataStructure bds = new BranchDataStructure(25, "handler");
         bds.setFlag(0);
@@ -273,8 +273,141 @@ public class MockHandler implements ServerHandler {
         }
         bds.saveFlags();
         return new Response(404);
+    }*/
+
+    @Override
+    public synchronized Response handle(Request req) { // note the [synchronized]
+        //if (corsEnabled && "OPTIONS".equals(req.getMethod())) {
+        if (corsRequest(req)) {
+            /*Response response = new Response(200);
+            response.setHeader("Allow", ALLOWED_METHODS);
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Methods", ALLOWED_METHODS);
+            List<String> requestHeaders = req.getHeaderValues("Access-Control-Request-Headers");
+            if (requestHeaders != null) {
+                response.setHeader("Access-Control-Allow-Headers", requestHeaders);
+            }*/
+
+            return handleCorsRequest(req);
+        }
+
+        /*if (prefix != null && req.getPath().startsWith(prefix)) {
+            req.setPath(req.getPath().substring(prefix.length()));
+        }*/
+
+        adjustPath(req);
+        // rare case when http-client is active within same jvm
+        // snapshot existing thread-local to restore
+        ScenarioEngine prevEngine = ScenarioEngine.get();
+        for (Map.Entry<Feature, ScenarioRuntime> entry : scenarioRuntimes.entrySet()) {
+            Feature feature = entry.getKey();
+            ScenarioRuntime runtime = entry.getValue();
+            // important for graal to work properly
+            Thread.currentThread().setContextClassLoader(runtime.featureRuntime.suite.classLoader);            
+            LOCAL_REQUEST.set(req);
+            req.processBody();
+            ScenarioEngine engine = initEngine(runtime, globals, req);
+            for (FeatureSection fs : feature.getSections()) {
+                if (fs.isOutline()) {
+                    runtime.logger.warn("skipping scenario outline - {}:{}", feature, fs.getScenarioOutline().getLine());
+                    break;
+                }
+                Scenario scenario = fs.getScenario();
+                if (isMatchingScenario(scenario, engine)) {
+                    Map<String, Object> configureHeaders;
+                    Variable response, responseStatus, responseHeaders, responseDelay;
+                    ScenarioActions actions = new ScenarioActions(engine);
+                    Result result = executeScenarioSteps(feature, runtime, scenario, actions);
+                    engine.mockAfterScenario();
+                    configureHeaders = engine.mockConfigureHeaders();
+                    response = engine.vars.remove(ScenarioEngine.RESPONSE);
+                    responseStatus = engine.vars.remove(ScenarioEngine.RESPONSE_STATUS);
+                    responseHeaders = engine.vars.remove(ScenarioEngine.RESPONSE_HEADERS);
+                    responseDelay = engine.vars.remove(RESPONSE_DELAY);
+                    globals.putAll(engine.shallowCloneVariables());
+                    Response res = new Response(200);
+                    if (result.isFailed()) {
+                        response = new Variable(result.getError().getMessage());
+                        responseStatus = new Variable(500);
+                    } else {
+                        if (corsEnabled) {
+                            res.setHeader("Access-Control-Allow-Origin", "*");
+                        }
+                        res.setHeaders(configureHeaders);
+                        //if (responseHeaders != null && responseHeaders.isMap()) {
+                        if (responseHeadersIsMap(responseHeaders)) {
+                            res.setHeaders(responseHeaders.getValue());
+                        }
+                        if (responseDelay != null) {
+                            res.setDelay(responseDelay.getAsInt());
+                        }
+                    }
+                    //if (response != null && !response.isNull()) {
+                    if (isResponseNull(response)) {
+                        res.setBody(response.getAsByteArray());
+                        if (res.getContentType() == null) {
+                            ResourceType rt = ResourceType.fromObject(response.getValue());
+                            if (rt != null) {
+                                res.setContentType(rt.contentType);
+                            }
+                        }
+                    }
+                    if (responseStatus != null) {
+                        res.setStatus(responseStatus.getAsInt());
+                    }
+                    /*if (prevEngine != null) {
+                        ScenarioEngine.set(prevEngine);
+                    }*/
+                    setPrevEngine(prevEngine);
+                    return res;
+                }
+            }
+        }
+        logger.warn("no scenarios matched, returning 404: {}", req); // NOTE: not logging with engine.logger
+        /*if (prevEngine != null) {
+            ScenarioEngine.set(prevEngine);
+        }*/
+        setPrevEngine(prevEngine);
+        return new Response(404);
     }
     
+    private boolean corsRequest(Request req) {
+        return corsEnabled && "OPTIONS".equals(req.getMethod());
+    }
+
+    private Response handleCorsRequest(Request req) {
+        Response response = new Response(200);
+            response.setHeader("Allow", ALLOWED_METHODS);
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Methods", ALLOWED_METHODS);
+            List<String> requestHeaders = req.getHeaderValues("Access-Control-Request-Headers");
+            if (requestHeaders != null) {
+                response.setHeader("Access-Control-Allow-Headers", requestHeaders);
+            }
+
+            return response;
+    }
+
+    private void adjustPath(Request req) {
+        if (prefix != null && req.getPath().startsWith(prefix)) {
+            req.setPath(req.getPath().substring(prefix.length()));
+        }
+    }
+
+    private boolean responseHeadersIsMap(Variable responseHeaders) {
+        return (responseHeaders != null) && responseHeaders.isMap();
+    }
+
+    private boolean isResponseNull(Variable response) {
+        return response != null && !response.isNull();
+    }
+
+    private void setPrevEngine(ScenarioEngine prevEngine) {
+        if (prevEngine != null) {
+            ScenarioEngine.set(prevEngine);
+        }
+    }
+
     private static ScenarioEngine initEngine(ScenarioRuntime runtime, Map<String, Variable> globals, Request req) {
         ScenarioEngine engine = new ScenarioEngine(runtime.engine.getConfig(), runtime, new HashMap(globals), runtime.logger);        
         engine.init();
