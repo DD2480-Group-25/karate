@@ -84,7 +84,7 @@ Instrumentation example
 
 We can see here how we instantiate our BranchDataStructure Class by telling it the number of branches and giving it a name. Then in each code block we set a flag with setFlag(id) if reached, and we save flags to disk right before each exit point with saveFlags().
 
-```json
+```java
 @Override
     public synchronized Response handle(Request req) { // note the [synchronized]
         BranchDataStructure bds = new BranchDataStructure(25, "handler");
@@ -153,7 +153,7 @@ Our own coverage tool shows less coverage in percentage compared to existing cov
 
 We added the following 8 test cases
 
-```json
+```java
 // Authors: Paul & Anneli
 // Requirement: the url needs to be set correctly
     @Test
@@ -234,7 +234,7 @@ We added the following 8 test cases
 
 We added the following 8 test cases:
 
-```json
+```java
     // Authors: Paul & Anneli
     // Requirement: the method needs to be set up correctly
     @Test
@@ -310,7 +310,7 @@ We added the following 8 test cases:
 
 2 test cases added.
 
-```json
+```java
     // Author: Carl
     // Requirement: The CORS should be enable, and the method should be OPTIONS
     @Test
@@ -373,7 +373,7 @@ We added the following 8 test cases:
 
 4 test cases added.
 
-```json
+```java
 // Author Rikard
 @Test
 void testToJavaString() {
