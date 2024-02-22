@@ -83,8 +83,8 @@ We used OpenClover with all four functions. It has been horrible to set up, as i
 Instrumentation example
 
 We can see here how we instantiate our BranchDataStructure Class by telling it the number of branches and giving it a name. Then in each code block we set a flag with setFlag(id) if reached, and we save flags to disk right before each exit point with saveFlags().
-"""
 
+```json
 @Override
     public synchronized Response handle(Request req) { // note the [synchronized]
         BranchDataStructure bds = new BranchDataStructure(25, "handler");
@@ -110,7 +110,7 @@ We can see here how we instantiate our BranchDataStructure Class by telling it t
 
         ...
      }
-"""
+```
 
 The full BranchDataStructure.java file can be found in karate-core/src/main/java/com/intuit/karate/BranchDataStructure.java.
 
@@ -120,18 +120,6 @@ Our own coverage tool sets flags on different branches, the branches are pick ma
 
 ### Command 
 git diff 13-mock-handler-handle-coverage-instrumention
-
-**GUIDELINES**
-Show a patch (or link to a branch) that shows the instrumented code to
-gather coverage measurements.
-
-The patch is probably too long to be copied here, so please add
-the git command that is used to obtain the patch instead:
-
-git diff ...
-
-What kinds of constructs does your tool support, and how accurate is
-its output?
 
 ### Evaluation
 
@@ -166,6 +154,7 @@ Our own coverage tool shows less coverage in percentage compared to existing cov
 We added the following 8 test cases
 
 ```json
+// Authors: Paul & Anneli
 // Requirement: the url needs to be set correctly
     @Test
     void testConfigureUrl() {        
@@ -246,6 +235,7 @@ We added the following 8 test cases
 We added the following 8 test cases:
 
 ```json
+    // Authors: Paul & Anneli
     // Requirement: the method needs to be set up correctly
     @Test
     void testMethod() {
