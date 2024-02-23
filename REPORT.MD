@@ -420,3 +420,45 @@ The challenge we are currently facing is completing the last step in the in plac
 ## Overall experience
 
 This project was a great way for us to get a feel for how it is to work collaboratively on an entirely new project with already set up classes and structures. At first, the large amount of folders and files was quite overwhelming and tough to navigate. It required a lot of reading in order to understand the different functions and how the project was set up. Furthermore, it required understanding of new tools, such as lizard and OpenClover. These tools were very helpful in determining which functions needed improvements. Calculating the cyclomatic complexity of functions was also new to us, and we learned how that is done via lizard but also how to do it by hand. In working with OpenClover, we could clearly see which parts of the code were lacking coverage, which was a very powerful visual. We have also used maven in this project, most of us for the first time, which will be helpful in future projects. 
+
+### For P+
+
+### Refactor for MockHandler:handle
+
+The method MockHandler.handle() is now refactored, the cyclomatic complexity of the method is now reduced to 14 from 22 (35% reduced), tested with Lizard, which meets the requirement for P+. However the refactor is not pushed with the motivaton of not affeting existing tests. Check the branch containing the refactor by using git diff 25-refactor-of-mockhandlerhandle. Here is an example:
+
+```java
+
+//if (corsEnabled && "OPTIONS".equals(req.getMethod())) {
+        if (corsRequest(req)) {
+            /*Response response = new Response(200);
+            response.setHeader("Allow", ALLOWED_METHODS);
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Methods", ALLOWED_METHODS);
+            List<String> requestHeaders = req.getHeaderValues("Access-Control-Request-Headers");
+            if (requestHeaders != null) {
+                response.setHeader("Access-Control-Allow-Headers", requestHeaders);
+            }*/
+
+            return handleCorsRequest(req);
+        }
+
+
+    private boolean corsRequest(Request req) {
+        return corsEnabled && "OPTIONS".equals(req.getMethod());
+    }
+
+    private Response handleCorsRequest(Request req) {
+        Response response = new Response(200);
+            response.setHeader("Allow", ALLOWED_METHODS);
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Methods", ALLOWED_METHODS);
+            List<String> requestHeaders = req.getHeaderValues("Access-Control-Request-Headers");
+            if (requestHeaders != null) {
+                response.setHeader("Access-Control-Allow-Headers", requestHeaders);
+            }
+
+            return response;
+    }
+
+```
