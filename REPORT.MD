@@ -423,8 +423,10 @@ This project was a great way for us to get a feel for how it is to work collabor
 
 ### For P+
 
-### Refactor for MockHandler:handle
+Only the members who want to get P+ put their refactoring with their name here, it is only count for that member. 
 
+### Refactor for MockHandler:handle
+### Carl Wang
 The method MockHandler.handle() is now refactored, the cyclomatic complexity of the method is now reduced to 14 from 22 (35% reduced), tested with Lizard, which meets the requirement for P+. However the refactor is not pushed with the motivaton of not affeting existing tests. Check the branch containing the refactor by using git diff 25-refactor-of-mockhandlerhandle. Here is an example:
 
 ```java
